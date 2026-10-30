@@ -17,7 +17,7 @@ export function tmdbPosterUrl(path: string | null | undefined): string | undefin
 export function catalogPosterUrl(id: string, path: string | undefined, options: PosterOptions, origin: string): string {
   const fallback = tmdbPosterUrl(path) || `https://images.metahub.space/poster/medium/${id}/img`;
   if (!options.rpdbKey) return fallback;
-  // Only poster settings belong in this URL, never Letterboxd or Stremio credentials.
+  // Non includere i token Letterboxd/Stremio nell’URL della locandina.
   const config = Buffer.from(JSON.stringify({
     rpdbKey: options.rpdbKey,
     rpdbStyle: options.rpdbStyle,

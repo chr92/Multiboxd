@@ -2,14 +2,6 @@ services:
   multiboxd:
     build: .
     container_name: multiboxd
-    env_file:
-      - .env.local
     ports:
-      - "127.0.0.1:11463:3000"
+      - "11463:11463"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
-      interval: 30s
-      timeout: 5s
-      start_period: 15s
-      retries: 3

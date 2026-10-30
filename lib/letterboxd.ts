@@ -237,7 +237,7 @@ export async function getWatchlist(username: string, _sessionToken?: string, pag
   const cached = cache.get<LbFilm[]>(cacheKey);
   if (cached) return cached;
   const urlPath = page === 1 ? `/${username}/watchlist/` : `/${username}/watchlist/page/${page}/`;
-  // A blocked or failed page is not the end of the watchlist. Do not cache it.
+  // Una pagina bloccata non indica la fine della watchlist: non metterla in cache.
   const res = await httpRequest(`${LB_BASE}${urlPath}`);
   if (res.status === 404 && page > 1) return [];
   if (res.status !== 200) throw new Error(`Letterboxd watchlist returned ${res.status}`);

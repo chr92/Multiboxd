@@ -1,5 +1,7 @@
 # Multiboxd
 
+This fork’s deployment branch is `self-hosted`. See [SELF_HOSTING.md](SELF_HOSTING.md) for configuration, validation and deployment prerequisites.
+
 Multiboxd è un add-on per Stremio che ti permette di integrare i cataloghi di Letterboxd direttamente nell'applicazione. Sincronizza la tua Watchlist, il tuo Diary, i film consigliati in base ai tuoi gusti e le attività dei tuoi amici, oltre a liste pubbliche personalizzate.
 
 ## Caratteristiche

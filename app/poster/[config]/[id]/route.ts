@@ -3,9 +3,10 @@ import { decodeConfig } from '@/lib/config';
 import { findByImdb } from '@/lib/tmdb';
 import { ratedPosterUrl, tmdbPosterUrl } from '@/lib/posters';
 
-export async function GET(req: Request, { params }: {
-  params: Promise<{ config: string; id: string }>;
-}) {
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ config: string; id: string }> }
+) {
   const { config: encoded, id: rawId } = await params;
   const id = rawId.replace(/\.jpg$/, '');
   if (!/^tt\d{7,}$/.test(id)) return new NextResponse(null, { status: 400 });
@@ -17,15 +18,19 @@ export async function GET(req: Request, { params }: {
       const contentType = response.headers.get('content-type') || '';
       if (response.ok && /^image\/(jpeg|png|webp)(?:;|$)/i.test(contentType)) {
         const image = await response.arrayBuffer();
-        if (image.byteLength) return new NextResponse(image, { headers: {
-          'Content-Type': contentType,
-          'Cache-Control': 'public, max-age=3600',
-          'Access-Control-Allow-Origin': '*',
-        } });
+        if (image.byteLength) {
+          return new NextResponse(image, {
+            headers: {
+              'Content-Type': contentType,
+              'Cache-Control': 'public, max-age=3600',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
       } else {
         await response.body?.cancel();
       }
-    } catch { /* Missing ratings, invalid keys, quota limits and outages use TMDB. */ }
+    } catch { /* Provider non disponibile: usa TMDB. */ }
   }
   let fallback = tmdbPosterUrl(new URL(req.url).searchParams.get('tmdb'));
   if (!fallback && process.env.TMDB_API_KEY) {

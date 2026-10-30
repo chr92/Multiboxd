@@ -1,9 +1,10 @@
 import { GET as catalogGET } from '../route';
 
-// Stremio serializes catalog extras in a path segment, not a query string.
-export async function GET(req: Request, { params }: {
-  params: Promise<{ config: string; type: string; id: string; extra: string }>;
-}) {
+// Stremio passa gli extra nel percorso: /catalog/movie/id/skip=100.json.
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ config: string; type: string; id: string; extra: string }> }
+) {
   const { extra, ...catalogParams } = await params;
   const url = new URL(req.url);
   const extras = new URLSearchParams(extra.replace(/\.json$/, ''));

@@ -1,0 +1,33 @@
+name: Check upstream patch
+on:
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: Commit or branch to test
+        required: true
+        default: fix/watchlist-posters-pagination
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: docker build -t multiboxd:upstream .
+      - name: Test HTTP
+        run: |
+          docker run -d --name multiboxd-test -p 127.0.0.1:3000:3000 \
+            -e TMDB_API_KEY=test-only \
+            -e NODE_OPTIONS=--require=/fixtures/upstreams.cjs \
+            -v "$PWD/tests:/fixtures:ro" multiboxd:upstream
+          TEST_URL=http://127.0.0.1:3000 node --test tests/catalog.test.cjs
+      - if: always()
+        run: |
+          docker logs multiboxd-test || true
+          docker rm -f multiboxd-test || true
